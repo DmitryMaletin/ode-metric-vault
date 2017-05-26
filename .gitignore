@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+ODE_Metrics_Stage/ODE_Metrics_Stage.jfm
+Release_scripts/Metrics_Stage_Release.dacpac
+Release_scripts/ODE_Metrics_Stage.dll
