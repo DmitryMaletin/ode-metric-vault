@@ -12,6 +12,7 @@ BEGIN
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
 		,[release_number]
+		,[release_key]
 		,[release_description]
 		,[reference_number]
 		,[reference_source]

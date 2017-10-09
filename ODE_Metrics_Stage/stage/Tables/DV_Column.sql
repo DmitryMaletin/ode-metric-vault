@@ -9,14 +9,15 @@
     [column_precision]        INT                NULL,
     [column_scale]            INT                NULL,
     [Collation_Name]          [sysname]          NULL,
-    [bk_ordinal_position]     INT                NOT NULL,
+    [is_derived]              BIT                NULL,
+    [derived_value]           VARCHAR (50)       NULL,
     [source_ordinal_position] INT                NOT NULL,
     [is_source_date]          BIT                NOT NULL,
     [is_retired]              BIT                NOT NULL,
     [release_key]             INT                NOT NULL,
     [release_number]          INT                NULL,
     [version_number]          INT                NOT NULL,
-    [updated_by]              VARCHAR (30)       NULL,
+    [updated_by]              VARCHAR (128)       NULL,
     [update_date_time]        DATETIMEOFFSET (7) NULL
 );
 

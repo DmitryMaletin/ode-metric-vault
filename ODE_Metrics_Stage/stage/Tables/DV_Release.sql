@@ -7,12 +7,12 @@
     [build_number]              INT                NOT NULL,
     [build_date]                DATETIMEOFFSET (7) NULL,
     [build_server]              VARCHAR (256)      NULL,
-    [release_built_by]          VARCHAR (30)       NULL,
+    [release_built_by]          VARCHAR (128)       NULL,
     [release_start_datetime]    DATETIMEOFFSET (7) NULL,
     [release_complete_datetime] DATETIMEOFFSET (7) NULL,
     [release_count]             INT                NOT NULL,
     [version_number]            INT                NOT NULL,
-    [updated_by]                VARCHAR (30)       NOT NULL,
+    [updated_by]                VARCHAR (128)       NOT NULL,
     [updated_datetime]          DATETIMEOFFSET (7) NOT NULL
 );
 

@@ -14,7 +14,6 @@ BEGIN
 		,s.[source_table_key]
 		,s.[system_key]
 		,s.[source_unique_name]
-		,s.[source_type] 
 		,s.[load_type]
 		,s.[source_table_schma] 
 		,s.[source_table_nme] 

@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{618072e4-b691-4e31-b9d0-bf58949fb57d}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -24,7 +24,7 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <GenerateCreateScript>True</GenerateCreateScript>
-    <DefaultCollation>Latin1_General_CI_AS</DefaultCollation>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -64,6 +64,7 @@
     <Folder Include="stage\Tables\" />
     <Folder Include="stage\Stored Procedures\" />
     <Folder Include="Security\" />
+    <Folder Include="dbo" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="stage\Tables\DV_Link.sql" />
@@ -149,6 +150,17 @@
     <Build Include="stage\Tables\DV_Link_Key_Column.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Link_Key.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Link_Key_Column.sql" />
+    <Build Include="stage\Tables\DV_Stage_Schema.sql" />
+    <Build Include="stage\Tables\DV_Stage_Database.sql" />
+    <Build Include="stage\Tables\DV_Source_Version.sql" />
+    <Build Include="stage\Tables\DV_Object_Match.sql" />
+    <Build Include="stage\Tables\DV_Column_Match.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Stage_Schema.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Stage_Database.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Source_Version.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Object_Match.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Column_Match.sql" />
+    <Build Include="dbo\dv_task_state.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="ODE_Config">

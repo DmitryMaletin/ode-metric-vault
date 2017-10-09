@@ -6,7 +6,7 @@
     [release_key]            INT                NOT NULL,
     [release_number]         INT                NULL,
     [version_number]         INT                NULL,
-    [updated_by]             VARCHAR (30)       NULL,
+    [updated_by]             VARCHAR (128)       NULL,
     [update_date_time]       DATETIMEOFFSET (7) NULL
 );
 
