@@ -109,7 +109,7 @@ GO
 
 --Insert data to the release build table
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 1, 1, N'Header', N'SET IDENTITY_INSERT [dv_release].[dv_release_master] ON; MERGE INTO [dv_release].[dv_release_master] AS trgt USING	
-(VALUES (-1,1,''Metrics vault settings'',''N/A'',''N/A'',12,''Oct  9 2017  4:30:49.5736584PM +13:00'',''PC111'',''dbo'')
+(VALUES (-1,1,''Metrics vault settings'',''N/A'',''N/A'',13,''Oct  9 2017  4:57:24.9611707PM +13:00'',''PC111'',''dbo'')
 			) AS src([release_key],[release_number],[release_description],[reference_number],[reference_source],[build_number],[build_date],[build_server],[release_built_by])
 	ON
 		trgt.[release_key] = src.[release_key]
@@ -398,7 +398,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([hub_key],[hub_name],[hub_abbreviation],[hub_schema],[hub_database],[is_compressed],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub] OFF;', 29)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub] OFF;', 28)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 9, 1, N'Table', N'SET IDENTITY_INSERT [dv_scheduler].[dv_source_table_hierarchy] ON; MERGE INTO [dv_scheduler].[dv_source_table_hierarchy] AS trgt USING	
 (VALUES (-1027,-2041,-110,0,-1),
@@ -595,7 +595,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([link_key],[link_name],[link_abbreviation],[link_schema],[link_database],[is_retired],[is_compressed],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_link] OFF;', 14)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_link] OFF;', 13)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 13, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_link_key_column] ON; MERGE INTO [dbo].[dv_link_key_column] AS trgt USING	
 (VALUES (-1132,-115,''DV_Hub_Key'',-1),
