@@ -279,9 +279,10 @@ WITH hStable	AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Source_Table])
 ,sSatInt		AS (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_Satellite_Integrity]  WHERE dv_row_is_current = 1 AND dv_is_tombstone = 0)
 
 
+
 SELECT DISTINCT 
   hStable.source_table_key		AS SourceTableKey
-, sStable.[source_table_name]	AS SourceTableName
+, sStable.[source_unique_name]	AS SourceTableName
 , sDDStable.[ShortDescription]	AS SourceTableShortDesc
 , sDDStable.[LongDescription]	AS SourceTableLongDesc
 , CASE WHEN sStable.is_retired = 0 Then 'Current' ELSE 'Retired' END AS SourceTableFlag

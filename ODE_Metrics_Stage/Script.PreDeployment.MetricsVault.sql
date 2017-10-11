@@ -109,7 +109,7 @@ GO
 
 --Insert data to the release build table
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 1, 1, N'Header', N'SET IDENTITY_INSERT [dv_release].[dv_release_master] ON; MERGE INTO [dv_release].[dv_release_master] AS trgt USING	
-(VALUES (-1,1,''Metrics vault settings'',''N/A'',''N/A'',13,''Oct  9 2017  4:57:24.9611707PM +13:00'',''PC111'',''dbo'')
+(VALUES (-1,1,''Metrics vault settings'',''N/A'',''N/A'',14,''Oct 11 2017  2:19:43.2553375PM +13:00'',''PC111'',''dbo'')
 			) AS src([release_key],[release_number],[release_description],[reference_number],[reference_source],[build_number],[build_date],[build_server],[release_built_by])
 	ON
 		trgt.[release_key] = src.[release_key]
@@ -718,7 +718,8 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite] OFF;', 50)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 15, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_satellite_column] ON; MERGE INTO [dbo].[dv_satellite_column] AS trgt USING	
-(VALUES (-2433,-106,''is_derived'',''bit'',1,1,0,NULL,23,NULL,NULL,0,-1),
+(VALUES (-2434,-1035,''source_unique_name'',''varchar'',128,0,0,NULL,19,NULL,NULL,0,-1),
+		(-2433,-106,''is_derived'',''bit'',1,1,0,NULL,23,NULL,NULL,0,-1),
 		(-2432,-106,''derived_value'',''varchar'',50,0,0,NULL,22,NULL,NULL,0,-1),
 		(-2431,-1041,''release_number'',''int'',4,10,0,NULL,8,NULL,NULL,0,-1),
 		(-2430,-113,''source_database_name'',''varchar'',50,0,0,NULL,14,NULL,NULL,0,-1),
@@ -842,7 +843,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-1295,-1035,''source_system_is_retired'',''bit'',1,1,0,NULL,7,NULL,NULL,0,-1),
 		(-1292,-1035,''release_number'',''int'',4,10,0,NULL,4,NULL,NULL,0,-1),
 		(-1291,-1035,''release_key'',''int'',4,10,0,NULL,3,NULL,NULL,0,-1),
-		(-1290,-1035,''metrics_stage_run_time'',''datetimeoffset'',10,34,7,NULL,2,NULL,NULL,0,-1),
 		(-1289,-1035,''is_retired'',''bit'',1,1,0,NULL,1,NULL,NULL,0,-1),
 		(-1288,-105,''release_key'',''int'',4,10,0,NULL,7,NULL,NULL,0,-1),
 		(-1287,-113,''release_key'',''int'',4,10,0,NULL,10,NULL,NULL,0,-1),
@@ -1175,7 +1175,8 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite_column] OFF;', 107)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 17, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_column] ON; MERGE INTO [dbo].[dv_column] AS trgt USING	
-(VALUES (-2453,-104,-2426,''release_key'',''int'',4,10,0,NULL,NULL,NULL,16,0,0,-1),
+(VALUES (-2454,-1034,-2434,''source_unique_name'',''varchar'',128,0,0,NULL,NULL,NULL,19,0,0,-1),
+		(-2453,-104,-2426,''release_key'',''int'',4,10,0,NULL,NULL,NULL,16,0,0,-1),
 		(-2452,-2046,-2425,''version_number'',''int'',4,10,0,NULL,NULL,NULL,7,0,0,-1),
 		(-2451,-2046,-2424,''updated_by'',''varchar'',128,0,0,NULL,NULL,NULL,8,0,0,-1),
 		(-2450,-2046,-2423,''update_date_time'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,9,0,0,-1),
@@ -1299,7 +1300,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-1316,-1034,-1295,''source_system_is_retired'',''bit'',1,1,0,NULL,NULL,NULL,4,0,0,-1),
 		(-1313,-1034,-1292,''release_number'',''int'',4,10,0,NULL,NULL,NULL,16,0,0,-1),
 		(-1312,-1034,-1291,''release_key'',''int'',4,10,0,NULL,NULL,NULL,15,0,0,-1),
-		(-1311,-1034,-1290,''metrics_stage_run_time'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,1,0,0,-1),
 		(-1310,-1034,-1289,''is_retired'',''bit'',1,1,0,NULL,NULL,NULL,14,0,0,-1),
 		(-1309,-105,-1288,''release_key'',''int'',4,10,0,NULL,NULL,NULL,21,0,0,-1),
 		(-1308,-113,-1287,''release_key'',''int'',4,10,0,NULL,NULL,NULL,10,0,0,-1),

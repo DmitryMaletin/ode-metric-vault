@@ -1,5 +1,6 @@
 ﻿
-CREATE PROCEDURE [stage].[usp_DV_Source_Table]
+
+CREATE PROCEDURE [Stage].[usp_DV_Source_Table]
 --	@LoadType varchar(128)
 AS
 BEGIN
@@ -24,6 +25,7 @@ BEGIN
 		,sSSys.[release_number] AS [source_system_release_number]
 		,sSTable.[source_table_schema]
 		,sSTable.[source_table_name]
+		,sSTable.source_unique_name
 		,sSTable.[source_table_load_type]
 		,sSTable.[is_retired]
 		,sSTable.[release_key]
