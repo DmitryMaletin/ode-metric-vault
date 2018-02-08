@@ -536,3 +536,194 @@ LEFT JOIN sSat				ON sSat.h_DV_Satellite_key = hSat.h_DV_Satellite_key
 LEFT JOIN sColumn			ON hColumn.h_DV_Satellite_Column_key = sColumn.h_DV_Satellite_Column_key
 
 GO
+
+
+
+CREATE VIEW [dbo].[vw_Schedule_Run_Stats]
+/*
+Schedule run statistics: state, start, finish, duration
+*/
+AS 
+WITH hRun	AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Schedule_Run])
+, sRun		AS (SELECT s.*,cast(cast(run_end_datetime as datetime)-cast(run_start_datetime as datetime) as time) as duration
+ FROM [ODE_Metrics_Vault].[sat].[s_DV_Schedule_Run] s WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+, hExc		AS (SELECT * FROM [ODE_Metrics_Vault].[RawHub].[h_DV_Exception])
+, sExc		AS (SELECT * FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Exception] WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+SELECT sRun.run_status
+, cast(sRun.run_start_datetime AS datetime) AS ScheduleRunStart
+, cast(sRun.run_end_datetime AS datetime) AS ScheduleRunEnd
+, sRun.run_schedule_name
+, sRun.run_key
+, sRun.duration
+, cast(sExc.SystemDate as date) AS ErrorDate
+, sum(case when errorprocedure like 'dv_load%' then 1 else 0 end) as NumLoadsFailed
+FROM hRun
+JOIN sRun ON hRun.h_DV_Schedule_Run_key = sRun.h_DV_Schedule_Run_key
+JOIN sExc ON sExc.SystemDate >= cast(sRun.[run_start_datetime] AS datetime)
+  AND cast(sRun.[run_end_datetime] AS datetime) > = sExc.SystemDate
+WHERE errorprocedure not in ('dv_process_queued_Agent001')
+GROUP BY sRun.run_status
+, cast(sRun.run_start_datetime AS datetime) 
+, cast(sRun.run_end_datetime AS datetime)
+, sRun.run_schedule_name
+, sRun.run_key
+, sRun.duration
+, cast(sExc.SystemDate as date) 
+GO
+
+
+
+
+CREATE VIEW  [dbo].[vw_Schedule_Tasks_Run_Stats] as
+/*
+Schedule tasks run statistics
+All durations sorted in descending order - rnum
+*/
+with 
+  hStable	AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Source_Table])
+ ,sStable	AS (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_DV_Source_Table] WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+ ,hRunManifest as (select * from  [ODE_Metrics_Vault].[hub].[h_DV_Run_Manifest])
+ ,sRunManifest as (select * from  [ODE_Metrics_Vault].[sat].[s_DV_Run_Manifest])
+ ,lManifestSource as (select l.* from [ODE_Metrics_Vault].[lnk].[l_Manifest_Source] l join 
+  [ODE_Metrics_Vault].[sat].[s_Link_Manifest_Source] s on l.[l_Manifest_Source_key]=s.l_Manifest_Source_key
+  WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+, lRunManifest as (select  l.* from [ODE_Metrics_Vault].[lnk].[l_Run_Manifest] l join [ODE_Metrics_Vault].[sat].[s_Link_Run_Manifest] s 
+on s.[l_Run_Manifest_key]=l.[l_Run_Manifest_key] )
+, sScheduleRun as (select * from [ODE_Metrics_Vault].[sat].[s_DV_Schedule_Run])
+, ManifestRun as 
+(
+select sRunManifest.run_key, sRunManifest.run_status
+ ,sScheduleRun.run_schedule_name
+ ,cast(sRunManifest.start_datetime as datetime) as start_datetime
+ ,cast(sRunManifest.completed_datetime as datetime) as end_datetime
+ , case when sRunManifest.completed_datetime is null then NULL
+        else cast(cast(sRunManifest.completed_datetime as datetime)-cast(sRunManifest.start_datetime as datetime) as time) end as task_duration
+ ,sStable.source_unique_name,sStable.source_table_key
+ from
+hRunManifest  join sRunManifest on hRunManifest.[h_DV_Run_Manifest_key]=sRunManifest.[h_DV_Run_Manifest_key]
+join lManifestSource on lManifestSource.[h_DV_Run_Manifest_key]=hRunManifest.[h_DV_Run_Manifest_key]
+join hStable on hStable.[h_DV_Source_Table_key]=lManifestSource.[h_DV_Source_Table_key]
+join sStable on sStable.[h_DV_Source_Table_key]=hStable.[h_DV_Source_Table_key]
+join lRunManifest on lRunManifest.[h_DV_Run_Manifest_key]=hRunManifest.[h_DV_Run_Manifest_key]
+join sScheduleRun on  sScheduleRun.h_DV_Schedule_Run_key=lRunManifest.h_DV_Schedule_Run_key
+)
+select r.*, Row_number() 
+                 OVER( 
+                   partition BY run_key 
+                   ORDER BY task_duration DESC) rnum  from ManifestRun r
+GO
+
+
+
+
+CREATE VIEW [dbo].[vw_Hub_Sat_Stats]
+AS
+/*
+View combines hub and satellite loading counts statistics and provides minimal lineage information
+*/
+WITH 
+-- source tables 
+hStable	AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Source_Table] where source_table_key>=0)
+,sStable		AS (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_DV_Source_Table] WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+-- hubs 
+,hHub			AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Hub])
+,sHub			AS (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_DV_Hub] WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0 and hub_key>=0)
+,hDV_Column		AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Column] where column_key>=0) 
+-- identify source table columns - satellite columns relationship
+,lColumn_Source AS (SELECT l.* FROM [ODE_Metrics_Vault].[lnk].[l_Column_Source] l
+					JOIN [ODE_Metrics_Vault].[sat].[s_Link_Column_Source] s 
+					ON l.l_Column_Source_key = s.l_Column_Source_key WHERE s.dv_row_is_current = 1 AND s.dv_is_tombstone = 0
+					and source_table_key>=0 )
+,lSat_Column	AS (SELECT l.* FROM [ODE_Metrics_Vault].[lnk].[l_column_Satellite_Column] l
+					JOIN [ODE_Metrics_Vault].[sat].[s_Link_Column_Satellite_Column] s 
+					ON l.l_column_Satellite_Column_key = s.l_Column_Satellite_Column_key WHERE s.dv_row_is_current = 1 AND s.dv_is_tombstone = 0
+					and s.satellite_col_key>=0)
+,lCol_Sat		AS (SELECT l.* FROM [ODE_Metrics_Vault].[lnk].[l_Satellite_column_Satellite] l
+					JOIN [ODE_Metrics_Vault].[sat].[s_Link_Satellite_Column_Satellite] s 
+					ON l.l_Satellite_column_Satellite_key = s.l_Satellite_Column_Satellite_key 
+					WHERE s.dv_row_is_current = 1 AND s.dv_is_tombstone = 0 and s.satellite_key>=0)
+-- satellite 
+,hSat			AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Satellite] where satellite_key>=0 )
+,sSatellite		AS (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_DV_Satellite] WHERE dv_row_is_current = 1 AND dv_is_tombstone = 0 and satellite_key>=0)
+-- hub - satellite relationship
+,lHub_Sat		AS (SELECT l.* FROM [ODE_Metrics_Vault].[lnk].[l_Hub_Satellite] l
+					JOIN [ODE_Metrics_Vault].[sat].[s_Link_Hub_Satellite] s 
+					ON l.l_Hub_Satellite_key = s.l_Hub_Satellite_key WHERE s.dv_row_is_current = 1 AND s.dv_is_tombstone = 0)
+,sHubSat as (select distinct hHub.hub_key,sSatellite.satellite_key, sHub.hub_name,sSatellite.satellite_name 
+					  from hHub join sHub on hHub.h_DV_Hub_key=sHub.h_DV_Hub_key 
+                           left join lHub_Sat on lHub_Sat.h_DV_Hub_key=hHub.h_DV_Hub_key
+						   left join sSatellite on sSatellite.h_DV_Satellite_key=lHub_Sat.h_DV_Satellite_key)
+-- source version
+,sSource_Ver as (SELECT * FROM [ODE_Metrics_Vault].[sat].[s_DV_Source_Version] WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+-- source table - satellite - hub relationships 
+,sl_SatSource as (select distinct lColumn_Source.[h_DV_Source_Table_key], lCol_Sat.[h_DV_Satellite_key] 
+from lColumn_Source join lSat_Column on lColumn_Source.[h_DV_Column_key]=lSat_Column.[h_DV_Column_key]
+join lCol_Sat on lCol_Sat.[h_DV_Satellite_Column_key]=lSat_Column.[h_DV_Satellite_Column_key])
+,sSat_Source as (select sl_SatSource.*, sStable.source_unique_name as source_table_name,sStable.source_table_key
+, ssatellite.satellite_key, ssatellite.satellite_name
+ from hStable join sSTable on hStable.h_DV_Source_Table_key=sStable.h_DV_Source_Table_key
+join sl_SatSource on sl_SatSource.h_DV_Source_Table_key=hStable.h_DV_Source_Table_key
+join ssatellite on ssatellite.h_DV_Satellite_key=sl_SatSource.h_DV_Satellite_key
+left join sHubSat on ssatellite.hub_key=sHubSat.hub_key)
+-- hub row counts stats
+,sHubSt   as 
+(SELECT cast(curnt.RunDate as date) as RunDate
+, curnt.[HubName]
+, curnt.HubKey
+, curnt.[SourceTableName]
+, sSource_Ver.Source_Table_Key as SourceTableKey
+,sSat_Source.satellite_key
+, sSat_Source.satellite_name
+, curnt.[TotalRowCount]
+, curnt.[TotalRowCount] - prev.[TotalRowCount] AS RowsAddedSinceLastRun
+FROM [ODE_Metrics_Vault].[sat].[s_Hub_Integrity] curnt
+LEFT JOIN [ODE_Metrics_Vault].[sat].[s_Hub_Integrity] prev
+ON curnt.HubKey = prev.HubKey
+AND curnt.SourceVersionKey = prev.SourceVersionKey
+AND curnt.RunDate > prev.RunDate
+AND NOT EXISTS (SELECT HubKey FROM [ODE_Metrics_Vault].[sat].[s_Hub_Integrity] subQuer
+				WHERE subQuer.HubKey = curnt.HubKey 
+					AND subQuer.SourceVersionKey = curnt.SourceVersionKey
+					AND curnt.RunDate > subQuer.RunDate
+					AND prev.RunDate < subQuer.RunDate)
+left join sSource_Ver on sSource_Ver.source_version_key=curnt.SourceVersionKey
+left join sSat_Source on sSat_Source.Source_Table_key=sSource_Ver.source_table_key)
+-- satellite row counts stats
+, sSatSt as (SELECT cast(curnt.RunDate as date) as RunDate
+  , sSatellite.hub_key
+  , sHubSat.hub_name
+  , curnt.SatelliteKey
+  , curnt.[SatelliteName]
+  ,sSat_Source.source_table_key
+  ,sSat_Source.source_table_name
+  , curnt.CurrentRowCount
+  , curnt.[TotalRowCount]
+  , curnt.[TombstoneRowCount]
+  , curnt.TotalRowCount - prev.PreviousTotalRowCount AS TotalRowsAddedSinceLastRun
+  , curnt.CurrentRowCount - prev.PreviousCurrentRowCount AS CurrentRowsAddedSinceLastRun
+  FROM [ODE_Metrics_Vault].[sat].[s_Satellite_Integrity] curnt
+  LEFT JOIN (select [s_Satellite_Integrity_key]
+   ,  PreviousTotalRowCount = LAG([TotalRowCount]) over (partition by [SatelliteKey] order by [dv_rowstartdate])
+   ,  PreviousCurrentRowCount = LAG(CurrentRowCount) OVER (Partition by [SatelliteKey] order by [dv_rowstartdate])
+    FROM [ODE_Metrics_Vault].[sat].[s_Satellite_Integrity]) prev ON curnt.s_Satellite_Integrity_key = prev.s_Satellite_Integrity_key
+	left join sSat_Source on sSat_Source.h_DV_Satellite_key=curnt.h_DV_Satellite_key
+	left join sSatellite on sSatellite.h_DV_Satellite_key=curnt.h_DV_Satellite_key
+	left join sHubSat on sHubSat.hub_key=sSatellite.hub_key and sHubSat.satellite_key=sSatellite.satellite_key
+)
+SELECT DISTINCT isnull(h.RunDate, s.RunDate) as rundate
+, isnull(h.SourceTableKey,s.source_table_key)	AS SourceTableKey
+, isnull(h.[SourceTableName],s.source_table_name)	AS SourceTableName
+, isnull(h.HubKey,s.hub_key)				AS HubKey
+, isnull(h.HubName, s.hub_name)				AS HubName
+, h.TotalRowCount			AS HubTotalRowCount
+, h.RowsAddedSinceLastRun  as HubRowsAddedSinceLastRun
+, isnull(h.satellite_key ,s.SatelliteKey)	AS SatelliteKey
+, isnull(h.satellite_name,s.SatelliteName)	AS SatelliteName
+, s.TotalRowCount			AS SatelliteTotalRowCount
+, s.CurrentRowCount		AS SatelliteCurrentRowCount
+, s.CurrentRowsAddedSinceLastRun as SatCurrentRowsAddedSinceLastRun
+, s.TotalRowsAddedSinceLastRun as SatelliteRowsAddedSinceLastRun
+, s.TombstoneRowCount		AS SatelliteTombstoneRowCount
+FROM sHubSt h full join sSatSt s on h.HubKey=s.hub_key and h.RunDate=s.RunDate and h.satellite_key=s.SatelliteKey
+GO
+
