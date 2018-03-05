@@ -14,7 +14,7 @@ BEGIN
 		,table_key AS source_table_key
 		,column_key
 	INTO [stage].[Link_Column_Source]
-	FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Column]
+	FROM [ODE_Metrics_Vault].[Sat].[s_DV_Column]
 	WHERE [dv_row_is_current] = 1
 	AND [dv_is_tombstone] = 0
 END

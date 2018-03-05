@@ -12,6 +12,7 @@ BEGIN
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
 		,[release_number]
+		,[release_key]
 		,[release_description]
 		,[reference_number]
 		,[reference_source]
@@ -26,5 +27,5 @@ BEGIN
 		,[updated_by]
 		,[updated_datetime]
 	INTO [stage].[DV_Release]
-	FROM [ODE_Config].[dv_release].[dv_release_master] m
+	FROM [$(ODE_Config)].[dv_release].[dv_release_master] m
 END

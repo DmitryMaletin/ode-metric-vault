@@ -13,7 +13,7 @@ BEGIN
 		,source_table_key
 		,run_manifest_key
 	INTO [stage].[Link_Manifest_Source]
-	FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Run_Manifest]
+	FROM [ODE_Metrics_Vault].[Sat].[s_DV_Run_Manifest]
 	WHERE [dv_row_is_current] = 1
 	AND [dv_is_tombstone] = 0
 END

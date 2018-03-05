@@ -14,7 +14,7 @@
     </RootPath>
     <RootNamespace>ODE_Metrics_Stage</RootNamespace>
     <AssemblyName>ODE_Metrics_Stage</AssemblyName>
-    <ModelCollation>1033, CI</ModelCollation>
+    <ModelCollation>1033,CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -23,6 +23,8 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <GenerateCreateScript>True</GenerateCreateScript>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -36,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Git\ode_metrics_vault\Release_scripts\</OutputPath>
     <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +48,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <SqlTargetName>Metrics_Stage_Release</SqlTargetName>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -59,14 +62,13 @@
     <Folder Include="Properties" />
     <Folder Include="stage\" />
     <Folder Include="stage\Tables\" />
-    <Folder Include="stage\Views\" />
     <Folder Include="stage\Stored Procedures\" />
     <Folder Include="Security\" />
+    <Folder Include="dbo" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="stage\Tables\DV_Link.sql" />
     <Build Include="stage\Tables\DV_Journal.sql" />
-    <Build Include="stage\Tables\DV_Hub_Link.sql" />
     <Build Include="stage\Tables\DV_Hub_Key.sql" />
     <Build Include="stage\Tables\DV_Hub.sql" />
     <Build Include="stage\Tables\DV_Exception.sql" />
@@ -81,7 +83,6 @@
     <Build Include="stage\Tables\Link_DataDictionary.sql" />
     <Build Include="stage\Tables\Satellite_DataDictionary.sql" />
     <Build Include="stage\Tables\Hub_DataDictionary.sql" />
-    <Build Include="stage\Tables\Link_Satellite_Column.sql" />
     <Build Include="stage\Tables\Link_Table_Schedule.sql" />
     <Build Include="stage\Tables\Link_Journal_Exception.sql" />
     <Build Include="stage\Tables\DV_Source_Table.sql" />
@@ -96,7 +97,6 @@
     <Build Include="stage\Tables\DV_Satellite.sql" />
     <Build Include="stage\Tables\DV_Run_Manifest.sql" />
     <Build Include="stage\Tables\DV_Release.sql" />
-    <Build Include="stage\Views\log4_Severity.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Source_Table_Raw.sql" />
     <Build Include="stage\Stored Procedures\usp_Column_Integrity.sql" />
     <Build Include="stage\Stored Procedures\usp_Hub_Integrity.sql" />
@@ -107,7 +107,6 @@
     <Build Include="stage\Stored Procedures\usp_Link_Run_Manifest.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Manifest_Source.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Column_Source.sql" />
-    <Build Include="stage\Stored Procedures\usp_Link_Satellite_Column.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Link_Satellite.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Hub_Link_Column.sql" />
     <Build Include="stage\Stored Procedures\usp_Link_Hub_Column_Key.sql" />
@@ -119,7 +118,6 @@
     <Build Include="stage\Stored Procedures\usp_DV_Schedule.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Source_System.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Satellite_Column.sql" />
-    <Build Include="stage\Stored Procedures\usp_DV_Hub_Link.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Hub_Column.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Hub_Key.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Run_Manifest.sql" />
@@ -131,5 +129,46 @@
     <Build Include="stage\Stored Procedures\usp_DV_Link.sql" />
     <Build Include="stage\Stored Procedures\usp_DV_Hub.sql" />
     <Build Include="Security\stage.sql" />
+    <Build Include="stage\Tables\log4_Severity.sql" />
+    <Build Include="stage\Tables\Link_Run_Manifest.sql" />
+    <Build Include="stage\Tables\Link_Manifest_Source.sql" />
+    <Build Include="stage\Tables\Link_Link_Satellite.sql" />
+    <Build Include="stage\Tables\Link_Hub_Satellite.sql" />
+    <Build Include="stage\Tables\Link_Hub_Link_Column.sql" />
+    <Build Include="stage\Tables\Link_Hub_Column_Key.sql" />
+    <Build Include="stage\Tables\Link_Column_Source.sql" />
+    <Build Include="stage\Stored Procedures\usp_log4_Severity.sql" />
+    <Build Include="stage\Tables\Link_Satellite_Column_Satellite.sql" />
+    <Build Include="stage\Tables\Link_Column_Satellite_Column.sql" />
+    <Build Include="stage\Stored Procedures\usp_Link_Satellite_Column_Satellite.sql" />
+    <Build Include="stage\Stored Procedures\usp_Link_Column_Satellite_Column.sql" />
+    <Build Include="stage\Tables\DV_Reference_Function.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Reference_Function.sql" />
+    <Build Include="stage\Tables\Link_Satellite_Column_Function.sql" />
+    <Build Include="stage\Stored Procedures\usp_Link_Satellite_Column_Function.sql" />
+    <Build Include="stage\Tables\Link_Link_Key.sql" />
+    <Build Include="stage\Tables\DV_Link_Key_Column.sql" />
+    <Build Include="stage\Stored Procedures\usp_Link_Link_Key.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Link_Key_Column.sql" />
+    <Build Include="stage\Tables\DV_Stage_Schema.sql" />
+    <Build Include="stage\Tables\DV_Stage_Database.sql" />
+    <Build Include="stage\Tables\DV_Source_Version.sql" />
+    <Build Include="stage\Tables\DV_Object_Match.sql" />
+    <Build Include="stage\Tables\DV_Column_Match.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Stage_Schema.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Stage_Database.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Source_Version.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Object_Match.sql" />
+    <Build Include="stage\Stored Procedures\usp_DV_Column_Match.sql" />
+    <Build Include="dbo\dv_task_state.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="ODE_Config">
+      <DefaultValue>ODE_Config</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Script.PreDeployment.MetricsVault.sql" />
   </ItemGroup>
 </Project>

@@ -20,7 +20,7 @@ BEGIN
 		,s.[updated_by]
 		,s.[update_date_time]
 	INTO [stage].[DV_Schedule_Hierarchy]
-	FROM [ODE_Config].[dv_scheduler].[dv_source_table_hierarchy] s
-	LEFT JOIN [ODE_Config].[dv_release].[dv_release_master] m
+	FROM [$(ODE_Config)].[dv_scheduler].[dv_source_table_hierarchy] s
+	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
 	ON s.release_key = m.release_key
 END

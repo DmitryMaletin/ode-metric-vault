@@ -31,7 +31,7 @@ BEGIN
 		,j.[SessionLoginTime]
 		,jd.[ExtraInfo]
 	INTO [stage].[DV_Journal]
-	FROM [ODE_Config].[log4].[Journal] j
-	LEFT JOIN [ODE_Config].[log4].[JournalDetail] jd
+	FROM [$(ODE_Config)].[log4].[Journal] j
+	LEFT JOIN [$(ODE_Config)].[log4].[JournalDetail] jd
 	ON j.JournalId = jd.JournalId
 END

@@ -12,6 +12,7 @@ BEGIN
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
 		,c.[hub_col_key]
 		,c.[hub_key_column_key]
+		,c.link_key_column_key
 		,c.[column_key]
 		,c.[release_key]
 		,m.[release_number]
@@ -19,7 +20,7 @@ BEGIN
 		,c.[updated_by]
 		,c.[updated_datetime]
 	INTO [stage].[DV_Hub_Column]
-	FROM [ODE_Config].[dbo].[dv_hub_column] c
-	LEFT JOIN [ODE_Config].[dv_release].[dv_release_master] m
+	FROM [$(ODE_Config)].[dbo].[dv_hub_column] c
+	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
 	ON c.release_key = m.release_key
 END

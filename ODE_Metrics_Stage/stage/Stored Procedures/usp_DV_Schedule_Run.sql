@@ -18,5 +18,5 @@ BEGIN
 		,[run_end_datetime]
 		,[updated_datetime]
 	INTO [stage].[DV_Schedule_Run]
-	FROM [ODE_Config].[dv_scheduler].[dv_run]
+	FROM [$(ODE_Config)].[dv_scheduler].[dv_run]
 END

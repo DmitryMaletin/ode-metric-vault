@@ -4,6 +4,6 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-EXEC [ODE_Config].dv_integrity.dv_col_metrics 0,'ODE_Metrics_Stage','Stage','Column_Integrity'
+EXEC [$(ODE_Config)].dv_integrity.dv_col_metrics 0,'ODE_Metrics_Stage','Stage','Column_Integrity'
 
 END

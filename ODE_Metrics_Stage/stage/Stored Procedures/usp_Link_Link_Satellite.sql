@@ -13,7 +13,7 @@ BEGIN
 		,satellite_key
 		,link_key
 	INTO [stage].[Link_Link_Satellite]
-	FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Satellite]
+	FROM [ODE_Metrics_Vault].[Sat].[s_DV_Satellite]
 	WHERE link_hub_satellite_flag = 'L'
 	AND [dv_row_is_current] = 1
 	AND [dv_is_tombstone] = 0

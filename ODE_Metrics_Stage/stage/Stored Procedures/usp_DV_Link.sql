@@ -16,6 +16,7 @@ BEGIN
 		,l.[link_abbreviation]
 		,l.[link_schema]
 		,l.[link_database]
+		,l.[is_compressed]
 		,l.[is_retired]
 		,l.[release_key]
 		,m.[release_number]
@@ -23,7 +24,7 @@ BEGIN
 		,l.[updated_by]
 		,l.[updated_datetime]
 	INTO [stage].[DV_Link]
-	FROM [ODE_Config].[dbo].[dv_link] l
-	LEFT JOIN [ODE_Config].[dv_release].[dv_release_master] m
+	FROM [$(ODE_Config)].[dbo].[dv_link] l
+	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
 	ON l.release_key = m.release_key
 END

@@ -11,7 +11,7 @@ BEGIN
 
 	;WITH hHubKey	AS (SELECT * FROM [ODE_Metrics_Vault].[hub].[h_DV_Hub_Key])
 	,sColumn		AS (SELECT * FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Hub_Column]	WHERE [dv_row_is_current] = 1	AND [dv_is_tombstone] = 0)
-	,sHubKey		AS (SELECT * FROM [ODE_Metrics_Vault].[RawSat].[s_DV_Hub_Key]		WHERE [dv_row_is_current] = 1	AND [dv_is_tombstone] = 0)
+	,sHubKey		AS (SELECT * FROM [ODE_Metrics_Vault].[Sat].[s_DV_Hub_Key]		WHERE [dv_row_is_current] = 1	AND [dv_is_tombstone] = 0)
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
 		,sHubKey.hub_key

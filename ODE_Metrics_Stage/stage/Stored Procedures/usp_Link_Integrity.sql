@@ -4,6 +4,6 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-EXEC [ODE_Config].dv_integrity.dv_link_metrics 0,'ODE_Metrics_Stage','Stage','Link_Integrity'
+EXEC [$(ODE_Config)].dv_integrity.dv_link_metrics 0,'ODE_Metrics_Stage','Stage','Link_Integrity'
 
 END

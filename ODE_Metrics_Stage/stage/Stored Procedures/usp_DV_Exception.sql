@@ -31,5 +31,5 @@ BEGIN
 		,[OriginalLoginName]
 		,[SessionLoginTime]
 	INTO [stage].[DV_Exception]
-	FROM [ODE_Config].[log4].[Exception] e
+	FROM [$(ODE_Config)].[log4].[Exception] e
 END

@@ -21,6 +21,7 @@ BEGIN
 		,s.[satellite_database]
 		,s.[duplicate_removal_threshold]
 		,s.[is_columnstore]
+		,s.[is_compressed]
 		,s.[is_retired]
 		,s.[release_key]
 		,m.[release_number]
@@ -28,7 +29,7 @@ BEGIN
 		,s.[updated_by]
 		,s.[updated_datetime]
 	INTO [stage].[DV_Satellite]
-	FROM [ODE_Config].[dbo].[dv_satellite] s
-	LEFT JOIN [ODE_Config].[dv_release].[dv_release_master] m
+	FROM [$(ODE_Config)].[dbo].[dv_satellite] s
+	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
 	ON s.release_key = m.release_key
 END
