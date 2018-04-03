@@ -1,4 +1,4 @@
-﻿/*
+/*
  Pre-Deployment Script 							
 --------------------------------------------------------------------------------------
  This file contains SQL statements that will be executed before the solution build script.	
@@ -228,7 +228,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,''DV_Schedule'',''Full'',-101,''stage'',''DV_Schedule'',-1,''DV_Schedule'',0,0,0,-1),
 		(-113,''DV_Source_System'',''Full'',-101,''stage'',''DV_Source_System'',-1,''DV_Source_System'',0,0,0,-1),
 		(-112,''DV_Satellite_Column'',''Full'',-101,''stage'',''DV_Satellite_Column'',-1,''DV_Satellite_Column'',0,0,0,-1),
-		(-111,''DV_Hub_Link'',''Full'',-101,''stage'',''DV_Hub_Link'',-1,''DV_Hub_Link'',0,0,0,-1),
 		(-110,''DV_Hub_Column'',''Full'',-101,''stage'',''DV_Hub_Column'',-1,''DV_Hub_Column'',0,0,0,-1),
 		(-109,''DV_Hub_Key'',''Full'',-101,''stage'',''DV_Hub_Key'',-1,''DV_Hub_Key'',0,0,0,-1),
 		(-108,''DV_Run_Manifest'',''Full'',-101,''stage'',''DV_Run_Manifest'',-1,''DV_Run_Manifest'',0,0,0,-1),
@@ -260,7 +259,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([source_table_key],[source_unique_name],[load_type],[system_key],[source_table_schma],[source_table_nme],[stage_schema_key],[stage_table_name],[is_columnstore],[is_compressed],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_source_table] OFF;', 50)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_source_table] OFF;', 49)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 6, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_source_version] ON; MERGE INTO [dbo].[dv_source_version] AS trgt USING	
 (VALUES (-2046,-2046,1,''BespokeProc'',''usp_DV_Stage_Schema'',NULL,0,1,-1),
@@ -302,7 +301,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,-114,1,''BespokeProc'',''usp_DV_Schedule'',NULL,0,1,-1),
 		(-113,-113,1,''BespokeProc'',''usp_DV_Source_System'',NULL,0,1,-1),
 		(-112,-112,1,''BespokeProc'',''usp_DV_Satellite_Column'',NULL,0,1,-1),
-		(-111,-111,1,''BespokeProc'',''usp_DV_Hub_Link'',NULL,0,1,-1),
 		(-110,-110,1,''BespokeProc'',''usp_DV_Hub_Column'',NULL,0,1,-1),
 		(-109,-109,1,''BespokeProc'',''usp_DV_Hub_Key'',NULL,0,1,-1),
 		(-108,-108,1,''BespokeProc'',''usp_DV_Run_Manifest'',NULL,0,1,-1),
@@ -331,7 +329,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([source_version_key],[source_table_key],[source_version],[source_type],[source_procedure_name],[source_filter],[pass_load_type_to_proc],[is_current],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_source_version] OFF;', 50)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_source_version] OFF;', 49)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 7, 1, N'Table', N'SET IDENTITY_INSERT [dv_scheduler].[dv_schedule] ON; MERGE INTO [dv_scheduler].[dv_schedule] AS trgt USING	
 (VALUES (-1,''Metrics_Vault'',''Intergity checks for the metrics vault'',''Daily'',0,-1)
@@ -370,7 +368,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,''DV_Schedule'',''h114'',''RawHub'',''ODE_Metrics_Vault'',0,0,-1),
 		(-113,''DV_Source_System'',''h113'',''RawHub'',''ODE_Metrics_Vault'',0,0,-1),
 		(-112,''DV_Satellite_Column'',''h112'',''hub'',''ODE_Metrics_Vault'',0,0,-1),
-		(-111,''DV_Hub_Link'',''h111'',''RawHub'',''ODE_Metrics_Vault'',0,0,-1),
 		(-110,''DV_Hub_Column'',''h110'',''RawHub'',''ODE_Metrics_Vault'',0,0,-1),
 		(-109,''DV_Hub_Key'',''h109'',''hub'',''ODE_Metrics_Vault'',0,0,-1),
 		(-108,''DV_Run_Manifest'',''h108'',''hub'',''ODE_Metrics_Vault'',0,0,-1),
@@ -398,7 +395,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([hub_key],[hub_name],[hub_abbreviation],[hub_schema],[hub_database],[is_compressed],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub] OFF;', 28)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub] OFF;', 27)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 9, 1, N'Table', N'SET IDENTITY_INSERT [dv_scheduler].[dv_source_table_hierarchy] ON; MERGE INTO [dv_scheduler].[dv_source_table_hierarchy] AS trgt USING	
 (VALUES (-1027,-2041,-110,0,-1),
@@ -445,7 +442,8 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 	 select @result = @@rowcount; SET IDENTITY_INSERT [dv_scheduler].[dv_source_table_hierarchy] OFF;', 27)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 10, 1, N'Table', N'SET IDENTITY_INSERT [dv_scheduler].[dv_schedule_source_table] ON; MERGE INTO [dv_scheduler].[dv_schedule_source_table] AS trgt USING	
-(VALUES (-2046,-1,-2046,''Full'',''Low'',''Agent001'',0,-1),
+(VALUES (-2047,-1,-139,''Full'',''Low'',''Agent001'',0,-1),
+        (-2046,-1,-2046,''Full'',''Low'',''Agent001'',0,-1),
 		(-2045,-1,-2045,''Full'',''Low'',''Agent001'',0,-1),
 		(-2044,-1,-2044,''Full'',''Low'',''Agent001'',0,-1),
 		(-2043,-1,-2043,''Full'',''Low'',''Agent001'',0,-1),
@@ -510,7 +508,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([schedule_source_table_key],[schedule_key],[source_table_key],[source_table_load_type],[priority],[queue],[is_cancelled],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dv_scheduler].[dv_schedule_source_table] OFF;', 48)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dv_scheduler].[dv_schedule_source_table] OFF;', 49)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 11, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_hub_key_column] ON; MERGE INTO [dbo].[dv_hub_key_column] AS trgt USING	
 (VALUES (-131,-129,''stage_schema_key'',''varchar'',128,0,0,NULL,1,-1),
@@ -532,7 +530,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,-114,''schedule_key'',''int'',4,10,0,NULL,1,-1),
 		(-113,-113,''source_system_key'',''int'',4,10,0,NULL,1,-1),
 		(-112,-112,''satellite_col_key'',''int'',4,10,0,NULL,1,-1),
-		(-111,-111,''hub_link_key'',''int'',4,10,0,NULL,1,-1),
 		(-110,-110,''hub_column_key'',''int'',4,10,0,NULL,1,-1),
 		(-109,-109,''hub_key_column_key'',''int'',4,10,0,NULL,1,-1),
 		(-108,-108,''run_manifest_key'',''int'',4,10,0,NULL,1,-1),
@@ -562,7 +559,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([hub_key_column_key],[hub_key],[hub_key_column_name],[hub_key_column_type],[hub_key_column_length],[hub_key_column_precision],[hub_key_column_scale],[hub_key_Collation_Name],[hub_key_ordinal_position],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub_key_column] OFF;', 30)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub_key_column] OFF;', 29)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 12, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_link] ON; MERGE INTO [dbo].[dv_link] AS trgt USING	
 (VALUES (-115,''Hub_Link_Column'',''l115'',''lnk'',''ODE_Metrics_Vault'',0,0,-1),
@@ -682,7 +679,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,-114,0,''H'',''DV_Schedule'',''114s'',''RawSat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
 		(-113,-113,0,''H'',''DV_Source_System'',''113s'',''RawSat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
 		(-112,-112,0,''H'',''DV_Satellite_Column'',''112s'',''sat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
-		(-111,-111,0,''H'',''DV_Hub_Link'',''s111'',''RawSat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
 		(-110,-110,0,''H'',''DV_Hub_Column'',''110s'',''RawSat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
 		(-109,-109,0,''H'',''DV_Hub_Key'',''109s'',''sat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
 		(-108,-108,0,''H'',''DV_Run_Manifest'',''108s'',''sat'',''ODE_Metrics_Vault'',0,0,0,0,-1),
@@ -715,7 +711,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([satellite_key],[hub_key],[link_key],[link_hub_satellite_flag],[satellite_name],[satellite_abbreviation],[satellite_schema],[satellite_database],[duplicate_removal_threshold],[is_columnstore],[is_compressed],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite] OFF;', 50)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite] OFF;', 49)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 15, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_satellite_column] ON; MERGE INTO [dbo].[dv_satellite_column] AS trgt USING	
 (VALUES (-2434,-1035,''source_unique_name'',''varchar'',128,0,0,NULL,19,NULL,NULL,0,-1),
@@ -850,7 +846,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-1285,-116,''release_key'',''int'',4,10,0,NULL,10,NULL,NULL,0,-1),
 		(-1284,-114,''release_key'',''int'',4,10,0,NULL,11,NULL,NULL,0,-1),
 		(-1283,-112,''release_key'',''int'',4,10,0,NULL,9,NULL,NULL,0,-1),
-		(-1282,-111,''release_key'',''int'',4,10,0,NULL,9,NULL,NULL,0,-1),
 		(-1281,-110,''release_key'',''int'',4,10,0,NULL,9,NULL,NULL,0,-1),
 		(-1280,-102,''release_key'',''int'',4,10,0,NULL,12,NULL,NULL,0,-1),
 		(-1279,-109,''release_key'',''int'',4,10,0,NULL,15,NULL,NULL,0,-1),
@@ -888,14 +883,14 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-265,-132,''ColumnKey'',''int'',4,10,0,NULL,1,NULL,NULL,0,-1),
 		(-257,-131,''TotalRowCount'',''bigint'',8,19,0,NULL,7,NULL,NULL,0,-1),
 		(-256,-131,''SourceTableName'',''varchar'',128,0,0,NULL,6,NULL,NULL,0,-1),
-		(-255,-131,''SourceTableKey'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
+		(-255,-131,''SourceVersionKey'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
 		(-254,-131,''SourceSystemName'',''varchar'',128,0,0,NULL,4,NULL,NULL,0,-1),
 		(-253,-131,''RunDate'',''datetimeoffset'',10,34,7,NULL,3,NULL,NULL,0,-1),
 		(-252,-131,''HubName'',''varchar'',128,0,0,NULL,2,NULL,NULL,0,-1),
 		(-251,-131,''HubKey'',''int'',4,10,0,NULL,1,NULL,NULL,0,-1),
 		(-250,-130,''TotalRowCount'',''bigint'',8,19,0,NULL,7,NULL,NULL,0,-1),
 		(-249,-130,''SourceTableName'',''varchar'',128,0,0,NULL,6,NULL,NULL,0,-1),
-		(-248,-130,''SourceTableKey'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
+		(-248,-130,''SourceVersionKey'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
 		(-247,-130,''SourceSystemName'',''varchar'',128,0,0,NULL,4,NULL,NULL,0,-1),
 		(-246,-130,''RunDate'',''datetimeoffset'',10,34,7,NULL,3,NULL,NULL,0,-1),
 		(-245,-130,''LinkName'',''varchar'',128,0,0,NULL,2,NULL,NULL,0,-1),
@@ -1006,13 +1001,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-133,-112,''satellite_key'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
 		(-132,-112,''satellite_col_key'',''int'',4,10,0,NULL,4,NULL,NULL,0,-1),
 		(-131,-112,''release_number'',''int'',4,10,0,NULL,3,NULL,NULL,0,-1),
-		(-129,-111,''version_number'',''int'',4,10,0,NULL,8,NULL,NULL,0,-1),
-		(-128,-111,''updated_datetime'',''datetimeoffset'',10,34,7,NULL,7,NULL,NULL,0,-1),
-		(-127,-111,''updated_by'',''varchar'',30,0,0,NULL,6,NULL,NULL,0,-1),
-		(-126,-111,''release_number'',''int'',4,10,0,NULL,5,NULL,NULL,0,-1),
-		(-125,-111,''link_key'',''int'',4,10,0,NULL,3,NULL,NULL,0,-1),
-		(-124,-111,''hub_link_key'',''int'',4,10,0,NULL,2,NULL,NULL,0,-1),
-		(-123,-111,''hub_key'',''int'',4,10,0,NULL,1,NULL,NULL,0,-1),
 		(-122,-110,''version_number'',''int'',4,10,0,NULL,8,NULL,NULL,0,-1),
 		(-121,-110,''updated_datetime'',''datetimeoffset'',10,34,7,NULL,7,NULL,NULL,0,-1),
 		(-120,-110,''updated_by'',''varchar'',128,0,0,NULL,6,NULL,NULL,0,-1),
@@ -1040,7 +1028,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([satellite_col_key],[satellite_key],[column_name],[column_type],[column_length],[column_precision],[column_scale],[collation_name],[satellite_ordinal_position],[ref_function_key],[func_arguments],[func_ordinal_position],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite_column] OFF;', 300)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_satellite_column] OFF;', 292)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 16, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_satellite_column] ON; MERGE INTO [dbo].[dv_satellite_column] AS trgt USING	
 (VALUES (-117,-110,''hub_col_key'',''int'',4,10,0,NULL,2,NULL,NULL,0,-1),
@@ -1307,7 +1295,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-1306,-116,-1285,''release_key'',''int'',4,10,0,NULL,NULL,NULL,10,0,0,-1),
 		(-1305,-114,-1284,''release_key'',''int'',4,10,0,NULL,NULL,NULL,11,0,0,-1),
 		(-1304,-112,-1283,''release_key'',''int'',4,10,0,NULL,NULL,NULL,9,0,0,-1),
-		(-1303,-111,-1282,''release_key'',''int'',4,10,0,NULL,NULL,NULL,9,0,0,-1),
 		(-1302,-110,-1281,''release_key'',''int'',4,10,0,NULL,NULL,NULL,9,0,0,-1),
 		(-1301,-102,-1280,''release_key'',''int'',4,10,0,NULL,NULL,NULL,13,0,0,-1),
 		(-1300,-109,-1279,''release_key'',''int'',4,10,0,NULL,NULL,NULL,15,0,0,-1),
@@ -1432,14 +1419,14 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-286,-132,-265,''column_key'',''int'',4,10,0,NULL,NULL,NULL,1,0,0,-1),
 		(-285,-131,-257,''TotalRowCount'',''bigint'',8,19,0,NULL,NULL,NULL,7,0,0,-1),
 		(-284,-131,-256,''SourceTableName'',''varchar'',128,0,0,NULL,NULL,NULL,6,0,0,-1),
-		(-283,-131,-255,''SourceTableKey'',''int'',4,10,0,NULL,NULL,NULL,4,0,0,-1),
+		(-283,-131,-255,''SourceVersionKey'',''int'',4,10,0,NULL,NULL,NULL,4,0,0,-1),
 		(-282,-131,-254,''SourceSystemName'',''varchar'',128,0,0,NULL,NULL,NULL,5,0,0,-1),
 		(-281,-131,-253,''RunDate'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,1,0,0,-1),
 		(-280,-131,-252,''HubName'',''varchar'',128,0,0,NULL,NULL,NULL,3,0,0,-1),
 		(-279,-131,-251,''HubKey'',''int'',4,10,0,NULL,NULL,NULL,2,0,0,-1),
 		(-278,-130,-250,''TotalRowCount'',''bigint'',8,19,0,NULL,NULL,NULL,7,0,0,-1),
 		(-277,-130,-249,''SourceTableName'',''varchar'',128,0,0,NULL,NULL,NULL,6,0,0,-1),
-		(-276,-130,-248,''SourceTableKey'',''int'',4,10,0,NULL,NULL,NULL,4,0,0,-1),
+		(-276,-130,-248,''SourceVersionKey'',''int'',4,10,0,NULL,NULL,NULL,4,0,0,-1),
 		(-275,-130,-247,''SourceSystemName'',''varchar'',128,0,0,NULL,NULL,NULL,5,0,0,-1),
 		(-274,-130,-246,''RunDate'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,1,0,0,-1),
 		(-273,-130,-245,''LinkName'',''varchar'',128,0,0,NULL,NULL,NULL,3,0,0,-1),
@@ -1499,7 +1486,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([column_key],[table_key],[satellite_col_key],[column_name],[column_type],[column_length],[column_precision],[column_scale],[Collation_Name],[is_derived],[derived_value],[source_ordinal_position],[is_source_date],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_column] OFF;', 300)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_column] OFF;', 299)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 18, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_column] ON; MERGE INTO [dbo].[dv_column] AS trgt USING	
 (VALUES (-224,-118,-206,''SessionId'',''int'',4,10,0,NULL,NULL,NULL,11,0,0,-1),
@@ -1577,13 +1564,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-145,-112,-133,''satellite_key'',''int'',4,10,0,NULL,NULL,NULL,3,0,0,-1),
 		(-144,-112,-132,''satellite_col_key'',''int'',4,10,0,NULL,NULL,NULL,2,0,0,-1),
 		(-143,-112,-131,''release_number'',''int'',4,10,0,NULL,NULL,NULL,5,0,0,-1),
-		(-140,-111,-129,''version_number'',''int'',4,10,0,NULL,NULL,NULL,6,0,0,-1),
-		(-139,-111,-128,''updated_datetime'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,8,0,0,-1),
-		(-138,-111,-127,''updated_by'',''varchar'',30,0,0,NULL,NULL,NULL,7,0,0,-1),
-		(-137,-111,-126,''release_number'',''int'',4,10,0,NULL,NULL,NULL,5,0,0,-1),
-		(-135,-111,-125,''link_key'',''int'',4,10,0,NULL,NULL,NULL,3,0,0,-1),
-		(-134,-111,-124,''hub_link_key'',''int'',4,10,0,NULL,NULL,NULL,2,0,0,-1),
-		(-133,-111,-123,''hub_key'',''int'',4,10,0,NULL,NULL,NULL,4,0,0,-1),
 		(-132,-110,-122,''version_number'',''int'',4,10,0,NULL,NULL,NULL,6,0,0,-1),
 		(-131,-110,-121,''updated_datetime'',''datetimeoffset'',10,34,7,NULL,NULL,NULL,8,0,0,-1),
 		(-130,-110,-120,''updated_by'',''varchar'',128,0,0,NULL,NULL,NULL,7,0,0,-1),
@@ -1633,7 +1613,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([column_key],[table_key],[satellite_col_key],[column_name],[column_type],[column_length],[column_precision],[column_scale],[Collation_Name],[is_derived],[derived_value],[source_ordinal_position],[is_source_date],[is_retired],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_column] OFF;', 107)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_column] OFF;',100)
 GO
 INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_sequence], [release_number], [release_statement_type], [release_statement], [affected_row_count]) VALUES (-1, 19, 1, N'Table', N'SET IDENTITY_INSERT [dbo].[dv_hub_column] ON; MERGE INTO [dbo].[dv_hub_column] AS trgt USING	
 (VALUES (-1175,-131,NULL,-2448,-1),
@@ -1693,7 +1673,6 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		(-114,-114,NULL,-163,-1),
 		(-113,-113,NULL,-152,-1),
 		(-112,-112,NULL,-144,-1),
-		(-111,-111,NULL,-134,-1),
 		(-110,-110,NULL,-126,-1),
 		(-109,-109,NULL,-113,-1),
 		(-108,-108,NULL,-449,-1),
@@ -1718,7 +1697,7 @@ INSERT [dv_release].[dv_release_build] ([release_build_key], [release_statement_
 		VALUES ([hub_col_key],[hub_key_column_key],[link_key_column_key],[column_key],[release_key])
 	
 	;
-	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub_column] OFF;', 68)
+	 select @result = @@rowcount; SET IDENTITY_INSERT [dbo].[dv_hub_column] OFF;', 67)
 GO
 
 
@@ -1757,7 +1736,6 @@ EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Release','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Satellite','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Link','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Hub','N'
-EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Hub_Link','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Stage_Schema','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Stage_Database','N'
 EXECUTE [dbo].[dv_create_hub_table] 'ODE_Metrics_Vault','DV_Source_Version','N'
@@ -1828,13 +1806,12 @@ EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Release','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Satellite','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Link','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Hub','N'
-EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Hub_Link','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Stage_Schema','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Stage_Database','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Source_Version','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Object_Match','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Column_Match','N'
----------------------------------------------------------------------------------------
+
 
 USE [$(DatabaseName)]
 GO
