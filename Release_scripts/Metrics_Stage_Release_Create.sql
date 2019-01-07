@@ -47,7 +47,6 @@ BEGIN
     ALTER DATABASE [$(DatabaseName)]
     SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE [$(DatabaseName)];
-
 END
 
 GO
@@ -2048,7 +2047,7 @@ EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Stage_Database','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Source_Version','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Object_Match','N'
 EXECUTE [dbo].[dv_create_sat_table] 'ODE_Metrics_Vault','DV_Column_Match','N'
----------------------------------------------------------------------------------------
+
 
 USE [$(DatabaseName)]
 GO
@@ -2088,6 +2087,32 @@ CREATE TABLE [dbo].[dv_task_state] (
     [updated_by]             VARCHAR (128)      NULL,
     [update_date_time]       DATETIMEOFFSET (7) NULL,
     PRIMARY KEY CLUSTERED ([task_state_key] ASC)
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Source_Table_Raw]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Source_Table_Raw] (
+    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
+    [source_table_key]       INT                NOT NULL,
+    [system_key]             INT                NULL,
+    [source_unique_name]     VARCHAR (128)      NOT NULL,
+    [load_type]              VARCHAR (50)       NOT NULL,
+    [source_table_schma]     VARCHAR (128)      NULL,
+    [source_table_nme]       VARCHAR (128)      NULL,
+    [stage_schema_key]       INT                NULL,
+    [stage_table_name]       VARCHAR (128)      NULL,
+    [is_columnstore]         BIT                NOT NULL,
+    [is_compressed]          BIT                NOT NULL,
+    [is_retired]             BIT                NOT NULL,
+    [release_key]            INT                NOT NULL,
+    [release_number]         INT                NULL,
+    [version_number]         INT                NULL,
+    [updated_by]             VARCHAR (128)      NULL,
+    [update_date_time]       DATETIMEOFFSET (7) NULL
 );
 
 
@@ -2134,6 +2159,31 @@ CREATE TABLE [stage].[DV_Satellite_Column] (
     [version_number]             INT                NOT NULL,
     [updated_by]                 VARCHAR (128)      NULL,
     [updated_datetime]           DATETIMEOFFSET (7) NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Source_Table]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Source_Table] (
+    [metrics_stage_run_time]       DATETIMEOFFSET (7) NOT NULL,
+    [source_table_key]             INT                NULL,
+    [source_system_key]            INT                NULL,
+    [source_system_is_retired]     BIT                NULL,
+    [source_system_name]           VARCHAR (50)       NULL,
+    [source_system_release_key]    INT                NULL,
+    [source_system_release_number] INT                NULL,
+    [source_table_schema]          VARCHAR (128)      NULL,
+    [source_table_name]            VARCHAR (128)      NULL,
+    [source_unique_name]           VARCHAR (128)      NULL,
+    [source_table_load_type]       VARCHAR (50)       NULL,
+    [is_retired]                   BIT                NULL,
+    [release_key]                  INT                NULL,
+    [release_number]               INT                NULL,
+    [updated_by]                   VARCHAR (128)      NULL,
+    [update_date_time]             DATETIMEOFFSET (7) NULL
 );
 
 
@@ -2257,38 +2307,6 @@ CREATE TABLE [stage].[Satellite_Integrity] (
 
 
 GO
-PRINT N'Creating [stage].[Link_Integrity]...';
-
-
-GO
-CREATE TABLE [stage].[Link_Integrity] (
-    [RunDate]          DATETIMEOFFSET (7) NULL,
-    [LinkKey]          INT                NULL,
-    [LinkName]         VARCHAR (128)      NULL,
-    [SourceVersionKey]   INT                NULL,
-    [SourceSystemName] VARCHAR (128)      NULL,
-    [SourceTableName]  VARCHAR (128)      NULL,
-    [TotalRowCount]    BIGINT             NULL
-);
-
-
-GO
-PRINT N'Creating [stage].[Hub_Integrity]...';
-
-
-GO
-CREATE TABLE [stage].[Hub_Integrity] (
-    [RunDate]          DATETIMEOFFSET (7) NULL,
-    [HubKey]           INT                NULL,
-    [HubName]          VARCHAR (128)      NULL,
-    [SourceVersionKey]   INT                NULL,
-    [SourceSystemName] VARCHAR (128)      NULL,
-    [SourceTableName]  VARCHAR (128)      NULL,
-    [TotalRowCount]    BIGINT             NULL
-);
-
-
-GO
 PRINT N'Creating [stage].[Column_Integrity]...';
 
 
@@ -2306,6 +2324,35 @@ CREATE TABLE [stage].[Column_Integrity] (
     [blank_count]  BIGINT        NULL,
     [minlength]    BIGINT        NULL,
     [maxlength]    BIGINT        NULL
+);
+
+
+GO
+PRINT N'Creating [stage].[DV_Column]...';
+
+
+GO
+CREATE TABLE [stage].[DV_Column] (
+    [metrics_stage_run_time]  DATETIMEOFFSET (7) NOT NULL,
+    [column_key]              INT                NOT NULL,
+    [table_key]               INT                NOT NULL,
+    [satellite_col_key]       INT                NULL,
+    [column_name]             VARCHAR (128)      NOT NULL,
+    [column_type]             VARCHAR (30)       NOT NULL,
+    [column_length]           INT                NULL,
+    [column_precision]        INT                NULL,
+    [column_scale]            INT                NULL,
+    [Collation_Name]          [sysname]          NULL,
+    [is_derived]              BIT                NULL,
+    [derived_value]           VARCHAR (50)       NULL,
+    [source_ordinal_position] INT                NOT NULL,
+    [is_source_date]          BIT                NOT NULL,
+    [is_retired]              BIT                NOT NULL,
+    [release_key]             INT                NOT NULL,
+    [release_number]          INT                NULL,
+    [version_number]          INT                NOT NULL,
+    [updated_by]              VARCHAR (128)      NULL,
+    [update_date_time]        DATETIMEOFFSET (7) NULL
 );
 
 
@@ -2438,6 +2485,31 @@ CREATE TABLE [stage].[DV_Link] (
 
 
 GO
+PRINT N'Creating [Stage].[DV_Release]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Release] (
+    [metrics_stage_run_time]    DATETIMEOFFSET (7) NOT NULL,
+    [release_number]            INT                NOT NULL,
+    [release_key]               INT                IDENTITY (1, 1) NOT NULL,
+    [release_description]       VARCHAR (256)      NULL,
+    [reference_number]          VARCHAR (50)       NULL,
+    [reference_source]          VARCHAR (50)       NULL,
+    [build_number]              INT                NOT NULL,
+    [build_date]                DATETIMEOFFSET (7) NULL,
+    [build_server]              VARCHAR (256)      NULL,
+    [release_built_by]          VARCHAR (128)      NULL,
+    [release_start_datetime]    DATETIMEOFFSET (7) NULL,
+    [release_complete_datetime] DATETIMEOFFSET (7) NULL,
+    [release_count]             INT                NOT NULL,
+    [version_number]            INT                NOT NULL,
+    [updated_by]                VARCHAR (128)      NOT NULL,
+    [updated_datetime]          DATETIMEOFFSET (7) NOT NULL
+);
+
+
+GO
 PRINT N'Creating [stage].[DV_Run_Manifest]...';
 
 
@@ -2564,6 +2636,28 @@ CREATE TABLE [stage].[DV_Schedule_Table] (
 
 
 GO
+PRINT N'Creating [Stage].[DV_Source_System]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Source_System] (
+    [metrics_stage_run_time]  DATETIMEOFFSET (7) NOT NULL,
+    [source_system_key]       INT                NOT NULL,
+    [source_system_name]      VARCHAR (50)       NOT NULL,
+    [source_database_name]    VARCHAR (50)       NOT NULL,
+    [package_folder]          VARCHAR (256)      NULL,
+    [package_project]         VARCHAR (256)      NULL,
+    [project_connection_name] VARCHAR (50)       NULL,
+    [is_retired]              BIT                NOT NULL,
+    [release_key]             INT                NOT NULL,
+    [release_number]          INT                NULL,
+    [version_number]          INT                NULL,
+    [updated_by]              VARCHAR (128)      NULL,
+    [update_date_time]        DATETIMEOFFSET (7) NULL
+);
+
+
+GO
 PRINT N'Creating [stage].[Link_Link_Satellite]...';
 
 
@@ -2608,6 +2702,112 @@ CREATE TABLE [stage].[log4_Severity] (
     [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
     [SeverityId]             INT                NOT NULL,
     [SeverityName]           VARCHAR (128)      NOT NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Column_Match]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Column_Match] (
+    [metrics_stage_run_time]    DATETIMEOFFSET (7) NOT NULL,
+    [col_match_key]             INT                NOT NULL,
+    [match_key]                 INT                NOT NULL,
+    [left_hub_key_column_key]   INT                NULL,
+    [left_link_key_column_key]  INT                NULL,
+    [left_satellite_col_key]    INT                NULL,
+    [left_column_key]           INT                NULL,
+    [right_hub_key_column_key]  INT                NULL,
+    [right_link_key_column_key] INT                NULL,
+    [right_satellite_col_key]   INT                NULL,
+    [right_column_key]          INT                NULL,
+    [release_key]               INT                NOT NULL,
+    [version_number]            INT                NOT NULL,
+    [updated_by]                VARCHAR (128)      NULL,
+    [updated_datetime]          DATETIMEOFFSET (7) NULL,
+    [release_number]            INT                NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Object_Match]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Object_Match] (
+    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
+    [match_key]              INT                NOT NULL,
+    [source_version_key]     INT                NOT NULL,
+    [temporal_pit_left]      DATETIMEOFFSET (7) NULL,
+    [temporal_pit_right]     DATETIMEOFFSET (7) NULL,
+    [is_retired]             BIT                NOT NULL,
+    [release_key]            INT                NOT NULL,
+    [version_number]         INT                NOT NULL,
+    [updated_by]             VARCHAR (128)      NULL,
+    [updated_datetime]       DATETIMEOFFSET (7) NULL,
+    [release_number]         INT                NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Source_Version]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Source_Version] (
+    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
+    [source_version_key]     INT                NOT NULL,
+    [source_table_key]       INT                NOT NULL,
+    [source_version]         INT                NULL,
+    [source_type]            VARCHAR (50)       NOT NULL,
+    [source_procedure_name]  VARCHAR (128)      NULL,
+    [source_filter]          VARCHAR (4000)     NULL,
+    [pass_load_type_to_proc] BIT                NOT NULL,
+    [is_current]             BIT                NOT NULL,
+    [release_key]            INT                NOT NULL,
+    [version_number]         INT                NULL,
+    [updated_by]             VARCHAR (128)      NULL,
+    [update_date_time]       DATETIMEOFFSET (7) NULL,
+    [release_number]         INT                NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Stage_Database]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Stage_Database] (
+    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
+    [stage_database_key]     INT                NOT NULL,
+    [stage_database_name]    VARCHAR (50)       NOT NULL,
+    [stage_connection_name]  VARCHAR (50)       NULL,
+    [is_retired]             BIT                NOT NULL,
+    [release_key]            INT                NOT NULL,
+    [version_number]         INT                NULL,
+    [updated_by]             VARCHAR (128)      NULL,
+    [update_date_time]       DATETIMEOFFSET (7) NULL,
+    [release_number]         INT                NULL
+);
+
+
+GO
+PRINT N'Creating [Stage].[DV_Stage_Schema]...';
+
+
+GO
+CREATE TABLE [Stage].[DV_Stage_Schema] (
+    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
+    [stage_schema_key]       INT                NOT NULL,
+    [stage_database_key]     INT                NOT NULL,
+    [stage_schema_name]      VARCHAR (50)       NOT NULL,
+    [is_retired]             BIT                NOT NULL,
+    [release_key]            INT                NOT NULL,
+    [version_number]         INT                NULL,
+    [updated_by]             VARCHAR (128)      NULL,
+    [update_date_time]       DATETIMEOFFSET (7) NULL,
+    [release_number]         INT                NULL
 );
 
 
@@ -2747,235 +2947,34 @@ CREATE TABLE [stage].[Link_Hub_Satellite] (
 
 
 GO
-PRINT N'Creating [Stage].[DV_Column_Match]...';
+PRINT N'Creating [stage].[Hub_Integrity]...';
 
 
 GO
-CREATE TABLE [Stage].[DV_Column_Match] (
-    [metrics_stage_run_time]    DATETIMEOFFSET (7) NOT NULL,
-    [col_match_key]             INT                NOT NULL,
-    [match_key]                 INT                NOT NULL,
-    [left_hub_key_column_key]   INT                NULL,
-    [left_link_key_column_key]  INT                NULL,
-    [left_satellite_col_key]    INT                NULL,
-    [left_column_key]           INT                NULL,
-    [right_hub_key_column_key]  INT                NULL,
-    [right_link_key_column_key] INT                NULL,
-    [right_satellite_col_key]   INT                NULL,
-    [right_column_key]          INT                NULL,
-    [release_key]               INT                NOT NULL,
-    [version_number]            INT                NOT NULL,
-    [updated_by]                VARCHAR (128)      NULL,
-    [updated_datetime]          DATETIMEOFFSET (7) NULL,
-    [release_number]            INT                NULL
+CREATE TABLE [stage].[Hub_Integrity] (
+    [RunDate]          DATETIMEOFFSET (7) NULL,
+    [HubKey]           INT                NULL,
+    [HubName]          VARCHAR (128)      NULL,
+    [SourceVersionKey] INT                NULL,
+    [SourceSystemName] VARCHAR (128)      NULL,
+    [SourceTableName]  VARCHAR (128)      NULL,
+    [TotalRowCount]    BIGINT             NULL
 );
 
 
 GO
-PRINT N'Creating [Stage].[DV_Object_Match]...';
+PRINT N'Creating [stage].[Link_Integrity]...';
 
 
 GO
-CREATE TABLE [Stage].[DV_Object_Match] (
-    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
-    [match_key]              INT                NOT NULL,
-    [source_version_key]     INT                NOT NULL,
-    [temporal_pit_left]      DATETIMEOFFSET (7) NULL,
-    [temporal_pit_right]     DATETIMEOFFSET (7) NULL,
-    [is_retired]             BIT                NOT NULL,
-    [release_key]            INT                NOT NULL,
-    [version_number]         INT                NOT NULL,
-    [updated_by]             VARCHAR (128)      NULL,
-    [updated_datetime]       DATETIMEOFFSET (7) NULL,
-    [release_number]         INT                NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Source_Version]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Source_Version] (
-    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
-    [source_version_key]     INT                NOT NULL,
-    [source_table_key]       INT                NOT NULL,
-    [source_version]         INT                NULL,
-    [source_type]            VARCHAR (50)       NOT NULL,
-    [source_procedure_name]  VARCHAR (128)      NULL,
-    [source_filter]          VARCHAR (4000)     NULL,
-    [pass_load_type_to_proc] BIT                NOT NULL,
-    [is_current]             BIT                NOT NULL,
-    [release_key]            INT                NOT NULL,
-    [version_number]         INT                NULL,
-    [updated_by]             VARCHAR (128)      NULL,
-    [update_date_time]       DATETIMEOFFSET (7) NULL,
-    [release_number]         INT                NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Stage_Database]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Stage_Database] (
-    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
-    [stage_database_key]     INT                NOT NULL,
-    [stage_database_name]    VARCHAR (50)       NOT NULL,
-    [stage_connection_name]  VARCHAR (50)       NULL,
-    [is_retired]             BIT                NOT NULL,
-    [release_key]            INT                NOT NULL,
-    [version_number]         INT                NULL,
-    [updated_by]             VARCHAR (128)      NULL,
-    [update_date_time]       DATETIMEOFFSET (7) NULL,
-    [release_number]         INT                NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Stage_Schema]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Stage_Schema] (
-    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
-    [stage_schema_key]       INT                NOT NULL,
-    [stage_database_key]     INT                NOT NULL,
-    [stage_schema_name]      VARCHAR (50)       NOT NULL,
-    [is_retired]             BIT                NOT NULL,
-    [release_key]            INT                NOT NULL,
-    [version_number]         INT                NULL,
-    [updated_by]             VARCHAR (128)      NULL,
-    [update_date_time]       DATETIMEOFFSET (7) NULL,
-    [release_number]         INT                NULL
-);
-
-
-GO
-PRINT N'Creating [stage].[DV_Column]...';
-
-
-GO
-CREATE TABLE [stage].[DV_Column] (
-    [metrics_stage_run_time]  DATETIMEOFFSET (7) NOT NULL,
-    [column_key]              INT                NOT NULL,
-    [table_key]               INT                NOT NULL,
-    [satellite_col_key]       INT                NULL,
-    [column_name]             VARCHAR (128)      NOT NULL,
-    [column_type]             VARCHAR (30)       NOT NULL,
-    [column_length]           INT                NULL,
-    [column_precision]        INT                NULL,
-    [column_scale]            INT                NULL,
-    [Collation_Name]          [sysname]          NULL,
-    [is_derived]              BIT                NULL,
-    [derived_value]           VARCHAR (50)       NULL,
-    [source_ordinal_position] INT                NOT NULL,
-    [is_source_date]          BIT                NOT NULL,
-    [is_retired]              BIT                NOT NULL,
-    [release_key]             INT                NOT NULL,
-    [release_number]          INT                NULL,
-    [version_number]          INT                NOT NULL,
-    [updated_by]              VARCHAR (128)      NULL,
-    [update_date_time]        DATETIMEOFFSET (7) NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Source_Table_Raw]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Source_Table_Raw] (
-    [metrics_stage_run_time] DATETIMEOFFSET (7) NOT NULL,
-    [source_table_key]       INT                NOT NULL,
-    [system_key]             INT                NULL,
-    [source_unique_name]     VARCHAR (128)      NOT NULL,
-    [load_type]              VARCHAR (50)       NOT NULL,
-    [source_table_schma]     VARCHAR (128)      NULL,
-    [source_table_nme]       VARCHAR (128)      NULL,
-    [stage_schema_key]       INT                NULL,
-    [stage_table_name]       VARCHAR (128)      NULL,
-    [is_columnstore]         BIT                NOT NULL,
-    [is_compressed]          BIT                NOT NULL,
-    [is_retired]             BIT                NOT NULL,
-    [release_key]            INT                NOT NULL,
-    [release_number]         INT                NULL,
-    [version_number]         INT                NULL,
-    [updated_by]             VARCHAR (128)      NULL,
-    [update_date_time]       DATETIMEOFFSET (7) NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Source_Table]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Source_Table] (
-    [metrics_stage_run_time]       DATETIMEOFFSET (7) NOT NULL,
-    [source_table_key]             INT                NULL,
-    [source_system_key]            INT                NULL,
-    [source_system_is_retired]     BIT                NULL,
-    [source_system_name]           VARCHAR (50)       NULL,
-    [source_system_release_key]    INT                NULL,
-    [source_system_release_number] INT                NULL,
-    [source_table_schema]          VARCHAR (128)      NULL,
-    [source_table_name]            VARCHAR (128)      NULL,
-    [source_unique_name]           VARCHAR (128)      NULL,
-    [source_table_load_type]       VARCHAR (50)       NULL,
-    [is_retired]                   BIT                NULL,
-    [release_key]                  INT                NULL,
-    [release_number]               INT                NULL,
-    [updated_by]                   VARCHAR (128)      NULL,
-    [update_date_time]             DATETIMEOFFSET (7) NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Source_System]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Source_System] (
-    [metrics_stage_run_time]  DATETIMEOFFSET (7) NOT NULL,
-    [source_system_key]       INT                NOT NULL,
-    [source_system_name]      VARCHAR (50)       NOT NULL,
-    [source_database_name]    VARCHAR (50)       NOT NULL,
-    [package_folder]          VARCHAR (256)      NULL,
-    [package_project]         VARCHAR (256)      NULL,
-    [project_connection_name] VARCHAR (50)       NULL,
-    [is_retired]              BIT                NOT NULL,
-    [release_key]             INT                NOT NULL,
-    [release_number]          INT                NULL,
-    [version_number]          INT                NULL,
-    [updated_by]              VARCHAR (128)      NULL,
-    [update_date_time]        DATETIMEOFFSET (7) NULL
-);
-
-
-GO
-PRINT N'Creating [Stage].[DV_Release]...';
-
-
-GO
-CREATE TABLE [Stage].[DV_Release] (
-    [metrics_stage_run_time]    DATETIMEOFFSET (7) NOT NULL,
-    [release_number]            INT                NOT NULL,
-    [release_key]               INT                IDENTITY (1, 1) NOT NULL,
-    [release_description]       VARCHAR (256)      NULL,
-    [reference_number]          VARCHAR (50)       NULL,
-    [reference_source]          VARCHAR (50)       NULL,
-    [build_number]              INT                NOT NULL,
-    [build_date]                DATETIMEOFFSET (7) NULL,
-    [build_server]              VARCHAR (256)      NULL,
-    [release_built_by]          VARCHAR (128)      NULL,
-    [release_start_datetime]    DATETIMEOFFSET (7) NULL,
-    [release_complete_datetime] DATETIMEOFFSET (7) NULL,
-    [release_count]             INT                NOT NULL,
-    [version_number]            INT                NOT NULL,
-    [updated_by]                VARCHAR (128)      NOT NULL,
-    [updated_datetime]          DATETIMEOFFSET (7) NOT NULL
+CREATE TABLE [stage].[Link_Integrity] (
+    [RunDate]          DATETIMEOFFSET (7) NULL,
+    [LinkKey]          INT                NULL,
+    [LinkName]         VARCHAR (128)      NULL,
+    [SourceVersionKey] INT                NULL,
+    [SourceSystemName] VARCHAR (128)      NULL,
+    [SourceTableName]  VARCHAR (128)      NULL,
+    [TotalRowCount]    BIGINT             NULL
 );
 
 
@@ -3569,6 +3568,51 @@ BEGIN
 	FROM [$(ODE_Config)].[dbo].[dv_column] c
 	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
 	ON c.release_key = m.release_key
+END
+GO
+PRINT N'Creating [Stage].[usp_DV_Source_Table]...';
+
+
+GO
+
+
+CREATE PROCEDURE [Stage].[usp_DV_Source_Table]
+--	@LoadType varchar(128)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF (EXISTS (SELECT * 
+				FROM INFORMATION_SCHEMA.TABLES 
+				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Source_Table'))
+	DROP TABLE stage.DV_Source_Table;
+
+;WITH hSTable	AS (SELECT * FROM [ODE_Metrics_Vault].hub.h_DV_Source_Table)
+,hSSys			AS (SELECT * FROM [ODE_Metrics_Vault].RawHub.h_DV_Source_System)
+,sSTable		AS (SELECT * FROM [ODE_Metrics_Vault].RawSat.s_DV_Source_Table_Raw WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+,sSSys			AS (SELECT * FROM [ODE_Metrics_Vault].RawSat.s_DV_Source_System WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+
+	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
+		,hSTable.[source_table_key]
+		,sSTable.[system_key] AS [source_system_key]
+		,sSSys.[is_retired] AS [source_system_is_retired]
+		,sSSys.[source_system_name]
+		,sSSys.[release_key] AS [source_system_release_key]
+		,sSSys.[release_number] AS [source_system_release_number]
+		,sSTable.[source_table_schema]
+		,sSTable.[source_table_name]
+		,sSTable.source_unique_name
+		,sSTable.[source_table_load_type]
+		,sSTable.[is_retired]
+		,sSTable.[release_key]
+		,sSTable.[release_number]
+		,sSTable.[updated_by]
+		,sSTable.[update_date_time]
+	INTO [stage].[DV_Source_Table]
+	FROM hSTable
+	LEFT JOIN sSTable	ON hSTable.h_DV_Source_Table_key = sSTable.h_DV_Source_Table_key
+	LEFT JOIN hSSys		ON sSTable.system_key = hSSys.source_system_key
+	LEFT JOIN sSSys		ON hSSys.h_DV_Source_System_key = sSSys.h_DV_Source_System_key
 END
 GO
 PRINT N'Creating [stage].[usp_DV_Schedule_Run]...';
@@ -4182,13 +4226,13 @@ BEGIN
 	ON c.release_key = m.release_key
 END
 GO
-PRINT N'Creating [Stage].[usp_DV_Stage_Schema]...';
+PRINT N'Creating [Stage].[usp_DV_Object_Match]...';
 
 
 GO
 
 
-CREATE PROCEDURE [Stage].[usp_DV_Stage_Schema]
+CREATE PROCEDURE [Stage].[usp_DV_Object_Match]
 --	@LoadType varchar(128)
 AS
 BEGIN
@@ -4196,56 +4240,24 @@ BEGIN
 
 	IF (EXISTS (SELECT * 
 				FROM INFORMATION_SCHEMA.TABLES 
-				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Stage_Schema'))
-	DROP TABLE stage.DV_Stage_Schema;
+				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Object_Match'))
+	DROP TABLE stage.DV_Object_Match;
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
-		,s.[stage_schema_key]
-      ,s.[stage_database_key]
-      ,s.[stage_schema_name]
-      ,s.[is_retired]
-      ,s.[release_key]
-      ,s.[version_number]
-      ,s.[updated_by]
-      ,s.[update_date_time]
+		,c.[match_key]
+      ,c.[source_version_key]
+      ,c.[temporal_pit_left]
+      ,c.[temporal_pit_right]
+      ,c.[is_retired]
+      ,c.[release_key]
+      ,c.[version_number]
+      ,c.[updated_by]
+      ,c.[updated_datetime]
 		,m.[release_number]
-	INTO [stage].[DV_Stage_Schema]
-	FROM [$(ODE_Config)].[dbo].[dv_stage_schema] s
+	INTO [stage].[DV_Object_Match]
+	FROM [$(ODE_Config)].[dbo].[dv_object_match] c
 	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
-	ON s.release_key = m.release_key
-END
-GO
-PRINT N'Creating [Stage].[usp_DV_Stage_Database]...';
-
-
-GO
-
-
-CREATE PROCEDURE [Stage].[usp_DV_Stage_Database]
---	@LoadType varchar(128)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	IF (EXISTS (SELECT * 
-				FROM INFORMATION_SCHEMA.TABLES 
-				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Stage_Database'))
-	DROP TABLE stage.DV_Stage_Database;
-
-	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
-		,s.[stage_database_key]
-      ,s.[stage_database_name]
-      ,s.[stage_connection_name]
-      ,s.[is_retired]
-      ,s.[release_key]
-      ,s.[version_number]
-      ,s.[updated_by]
-      ,s.[update_date_time]
-		,m.[release_number]
-	INTO [stage].[DV_Stage_Database]
-	FROM [$(ODE_Config)].[dbo].[dv_stage_database] s
-	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
-	ON s.release_key = m.release_key
+	ON c.release_key = m.release_key
 END
 GO
 PRINT N'Creating [Stage].[usp_DV_Source_Version]...';
@@ -4285,13 +4297,13 @@ BEGIN
 	ON s.release_key = m.release_key
 END
 GO
-PRINT N'Creating [Stage].[usp_DV_Object_Match]...';
+PRINT N'Creating [Stage].[usp_DV_Stage_Database]...';
 
 
 GO
 
 
-CREATE PROCEDURE [Stage].[usp_DV_Object_Match]
+CREATE PROCEDURE [Stage].[usp_DV_Stage_Database]
 --	@LoadType varchar(128)
 AS
 BEGIN
@@ -4299,33 +4311,32 @@ BEGIN
 
 	IF (EXISTS (SELECT * 
 				FROM INFORMATION_SCHEMA.TABLES 
-				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Object_Match'))
-	DROP TABLE stage.DV_Object_Match;
+				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Stage_Database'))
+	DROP TABLE stage.DV_Stage_Database;
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
-		,c.[match_key]
-      ,c.[source_version_key]
-      ,c.[temporal_pit_left]
-      ,c.[temporal_pit_right]
-      ,c.[is_retired]
-      ,c.[release_key]
-      ,c.[version_number]
-      ,c.[updated_by]
-      ,c.[updated_datetime]
+		,s.[stage_database_key]
+      ,s.[stage_database_name]
+      ,s.[stage_connection_name]
+      ,s.[is_retired]
+      ,s.[release_key]
+      ,s.[version_number]
+      ,s.[updated_by]
+      ,s.[update_date_time]
 		,m.[release_number]
-	INTO [stage].[DV_Object_Match]
-	FROM [$(ODE_Config)].[dbo].[dv_object_match] c
+	INTO [stage].[DV_Stage_Database]
+	FROM [$(ODE_Config)].[dbo].[dv_stage_database] s
 	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
-	ON c.release_key = m.release_key
+	ON s.release_key = m.release_key
 END
 GO
-PRINT N'Creating [Stage].[usp_DV_Source_Table]...';
+PRINT N'Creating [Stage].[usp_DV_Stage_Schema]...';
 
 
 GO
 
 
-CREATE PROCEDURE [Stage].[usp_DV_Source_Table]
+CREATE PROCEDURE [Stage].[usp_DV_Stage_Schema]
 --	@LoadType varchar(128)
 AS
 BEGIN
@@ -4333,35 +4344,23 @@ BEGIN
 
 	IF (EXISTS (SELECT * 
 				FROM INFORMATION_SCHEMA.TABLES 
-				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Source_Table'))
-	DROP TABLE stage.DV_Source_Table;
-
-;WITH hSTable	AS (SELECT * FROM [ODE_Metrics_Vault].hub.h_DV_Source_Table)
-,hSSys			AS (SELECT * FROM [ODE_Metrics_Vault].RawHub.h_DV_Source_System)
-,sSTable		AS (SELECT * FROM [ODE_Metrics_Vault].RawSat.s_DV_Source_Table_Raw WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
-,sSSys			AS (SELECT * FROM [ODE_Metrics_Vault].RawSat.s_DV_Source_System WHERE [dv_row_is_current] = 1 AND [dv_is_tombstone] = 0)
+				WHERE TABLE_SCHEMA = 'stage' AND TABLE_NAME = 'DV_Stage_Schema'))
+	DROP TABLE stage.DV_Stage_Schema;
 
 	SELECT metrics_stage_run_time = SYSDATETIMEOFFSET()
-		,hSTable.[source_table_key]
-		,sSTable.[system_key] AS [source_system_key]
-		,sSSys.[is_retired] AS [source_system_is_retired]
-		,sSSys.[source_system_name]
-		,sSSys.[release_key] AS [source_system_release_key]
-		,sSSys.[release_number] AS [source_system_release_number]
-		,sSTable.[source_table_schema]
-		,sSTable.[source_table_name]
-		,sSTable.source_unique_name
-		,sSTable.[source_table_load_type]
-		,sSTable.[is_retired]
-		,sSTable.[release_key]
-		,sSTable.[release_number]
-		,sSTable.[updated_by]
-		,sSTable.[update_date_time]
-	INTO [stage].[DV_Source_Table]
-	FROM hSTable
-	LEFT JOIN sSTable	ON hSTable.h_DV_Source_Table_key = sSTable.h_DV_Source_Table_key
-	LEFT JOIN hSSys		ON sSTable.system_key = hSSys.source_system_key
-	LEFT JOIN sSSys		ON hSSys.h_DV_Source_System_key = sSSys.h_DV_Source_System_key
+		,s.[stage_schema_key]
+      ,s.[stage_database_key]
+      ,s.[stage_schema_name]
+      ,s.[is_retired]
+      ,s.[release_key]
+      ,s.[version_number]
+      ,s.[updated_by]
+      ,s.[update_date_time]
+		,m.[release_number]
+	INTO [stage].[DV_Stage_Schema]
+	FROM [$(ODE_Config)].[dbo].[dv_stage_schema] s
+	LEFT JOIN [$(ODE_Config)].[dv_release].[dv_release_master] m
+	ON s.release_key = m.release_key
 END
 GO
 DECLARE @VarDecimalSupported AS BIT;
